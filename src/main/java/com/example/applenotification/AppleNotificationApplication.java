@@ -55,12 +55,26 @@ public class AppleNotificationApplication {
             final SimpleApnsPushNotification pushNotification;
 
 
-            final ApnsPayloadBuilder payloadBuilder = new SimpleApnsPayloadBuilder();
-            payloadBuilder.setAlertTitle("Alert!")
-                    .setAlertBody("Alert body!");
+//            final ApnsPayloadBuilder payloadBuilder = new SimpleApnsPayloadBuilder();
+//            payloadBuilder.setAlertTitle("Alert!")
+//                    .setAlertBody("Alert body!")
+//                    .set
 
 
-            final String payload = payloadBuilder.build();
+            final String payload = """
+                    {
+                       "aps" : {
+                          "alert" : {
+                             "title" : "Notification Title",
+                             "subtitle" : "Notification subtitle",
+                             "body" : "This is the body of push notification :)"
+                          },
+                          "sound":"default",
+                       },
+                       "text":"some text",
+                       "image":"https://picsum.photos/536/354"
+                    }
+                    """;
             final String token = TokenUtil.sanitizeTokenString(deviceToken);
 
             pushNotification = new SimpleApnsPushNotification(token, appBundleId, payload);
