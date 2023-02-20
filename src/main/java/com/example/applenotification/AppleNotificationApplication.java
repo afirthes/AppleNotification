@@ -2,6 +2,7 @@ package com.example.applenotification;
 
 import com.eatthepath.pushy.apns.ApnsClient;
 import com.eatthepath.pushy.apns.ApnsClientBuilder;
+import com.eatthepath.pushy.apns.DeliveryPriority;
 import com.eatthepath.pushy.apns.auth.ApnsSigningKey;
 import com.eatthepath.pushy.apns.util.ApnsPayloadBuilder;
 import com.eatthepath.pushy.apns.util.SimpleApnsPayloadBuilder;
@@ -14,6 +15,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import java.io.File;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Future;
 
 @SpringBootApplication
@@ -61,7 +65,7 @@ public class AppleNotificationApplication {
 //                    .set
 
 
-            final String payload = """
+            final String alertPayload = """
                     {
                        "aps" : {
                           "alert" : {
@@ -71,13 +75,21 @@ public class AppleNotificationApplication {
                           },
                           "sound":"default",
                        },
-                       "text":"some text",
-                       "image":"https://picsum.photos/536/354"
                     }
+                    """;
+
+            final String payload = """
+                    {
+                     "aps": {
+                         "content-available": 1
+                       },
+                       "image": "https://bit.ly/3dfsW2n",
+                       "text": "A nice picture of the Earth"
+                     }
                     """;
             final String token = TokenUtil.sanitizeTokenString(deviceToken);
 
-            pushNotification = new SimpleApnsPushNotification(token, appBundleId, payload);
+            pushNotification = new SimpleApnsPushNotification(token, appBundleId, payload, Instant.now().plus(1, ChronoUnit.DAYS), DeliveryPriority.CONSERVE_POWER );
 
             var future = apnsClient.sendNotification(pushNotification);
 
